@@ -1,4 +1,4 @@
-int ft_putstr_fd(char *s)
+int printf_string(char *s)
 {
     int len;
 
@@ -10,44 +10,47 @@ int ft_putstr_fd(char *s)
         write(1, &s[len], 1);
         len++;
     }
+    return (len);
+}
+
+int printf_char(int c)
+{
+    write(1, &c, 1);
+    return (1);
 }
 
 
 int handle_format_conversion(char conversion_type, va_list *args)
 {
-    if (*(to_print + 1) == 'c')
+    if (conversion_type == 'c')
+        return (printf_char(va_arg(*args, int)));
+    else if (conversion_type == 's')
+        return (printf_string(va_arg(*args, char *)));
+    else if (conversion_type == 'p')
     {
 
     }
-    else if (*(to_print + 1) == 's')
+    else if (conversion_type == 'd')
     {
 
     }
-    else if (*(to_print + 1) == 'p')
+    else if (conversion_type == 'i')
     {
 
     }
-    else if (*(to_print + 1) == 'd')
+    else if (conversion_type == 'u')
     {
 
     }
-    else if (*(to_print + 1) == 'i')
+    else if (conversion_type == 'x')
     {
 
     }
-    else if (*(to_print + 1) == 'u')
+    else if (conversion_type == 'X')
     {
 
     }
-    else if (*(to_print + 1) == 'x')
-    {
-
-    }
-    else if (*(to_print + 1) == 'X')
-    {
-
-    }
-    else if (*(to_print + 1) == '%')
+    else if (conversion_type == '%')
     {
 
     }
@@ -62,12 +65,15 @@ int ft_printf(const char *to_print, ...)
     if (!to_print)
         return (0);
     argument_index = 0;
+    printed_chars = 0;
     va_start(args, to_print);
     while (*to_print)
     {
         if (*to_print == '%')
         {
-            
+            printed_chars += handle_format_conversion(*(to_print + 1), &args);
+            to_print = to_print + 2;
+            argument_index++;
         }
         else
         {
